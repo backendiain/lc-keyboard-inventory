@@ -3,19 +3,21 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
+using Jmx.LC.KeyboardInventory.UI;
+using UnityEngine;
 
 namespace Jmx.LC.KeyboardInventory
 {
-    [BepInPlugin(modGuid, modName, modVersion)]
+    [BepInPlugin(ModGuid, ModName, ModVersion)]
     public class KeyboardInventoryModBase : BaseUnityPlugin
     {
-        private const string modGuid = "Jmx.LC.KeyboardInventory";
-        private const string modName = "Tweaks keybinds so that the number keys will change the current item held by the player.";
-        private const string modVersion = "0.1.0";
+        internal const string ModGuid = "Jmx.LC.KeyboardInventory";
+        internal const string ModName = "Keyboard Inventory";
+        internal const string ModVersion = "0.1.0";
     
-        private readonly Harmony _harmony = new Harmony(modGuid);
+        private readonly Harmony _harmony = new Harmony(ModGuid);
         private static KeyboardInventoryModBase Instance;
-        internal ManualLogSource _mls;
+        internal static ManualLogSource _mls;
         
         // Host
         internal static bool _isHost;
@@ -30,17 +32,62 @@ namespace Jmx.LC.KeyboardInventory
         // Player
         internal static PlayerControllerB _playerRef;
 
+        #region Lifecycle Private
         private void Awake()
         {
             if (Instance == null)
                 Instance = this;
             
-            _mls = BepInEx.Logging.Logger.CreateLogSource(modGuid);
-            _mls.LogInfo($"Testing the {modName} mod has awakened with a manual log source!");
+            _mls = BepInEx.Logging.Logger.CreateLogSource(ModGuid);
+            _mls.LogInfo($"Loaded {ModName}. Patching...");
             _harmony.PatchAll(typeof(KeyboardInventoryModBase));
 
-            // Plugin startup logic
-            Logger.LogInfo($"Plugin {modGuid} is loaded!");
+            var gameObj = new GameObject(nameof(GUILoader));
+            DontDestroyOnLoad(gameObj);
+            gameObj.hideFlags = HideFlags.HideAndDontSave;
+            gameObj.AddComponent<GUILoader>();
+            
+            _myGUI = gameObj.GetComponent<GUILoader>();
+            SetBindings();
+            SetGUIVars();
         }
+        
+        private void Update()
+        {
+            // Nothing to handle on update frame at the moment
+        }
+        
+        private void SetBindings()
+        {
+            _enableNumKeyInventoryBindings = Config.Bind("General Settings", "Enable num key inventory bindings?", true, "Enable num key inventory bindings?");
+        }
+        
+        private void SetGUIVars()
+        {
+            // load from config on start
+
+            // bools
+            _myGUI.GuiEnableNumKeyInventoryBindings = _enableNumKeyInventoryBindings.Value;
+        }
+
+        internal void UpdateCFGVarsFromGUI()
+        {
+            if(!_hasGUISynced)
+                SetGUIVars();
+            
+            // bools
+            _enableNumKeyInventoryBindings.Value = _myGUI.GuiEnableNumKeyInventoryBindings;
+        }
+        #endregion
+        
+        #region Patches
+        [HarmonyPatch(typeof(RoundManager), "Start")]
+        [HarmonyPrefix]
+        static void SetIsHost()
+        {
+            _mls.LogInfo("Host Status: " + RoundManager.Instance.NetworkManager.IsHost);
+            _isHost = RoundManager.Instance.NetworkManager.IsHost;
+        }
+        #endregion
     }
 }
