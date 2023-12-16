@@ -58,7 +58,7 @@ namespace Jmx.LC.KeyboardInventory.UI
             _mls.LogInfo($"MENUX: {MENUX}, MENUY: {MENUY}, CENTERX: {CENTERX}, ITEMWIDTH: {ITEMWIDTH}");   
         }
         #endregion
-
+        
         #region Menu
         /// <summary>
         ///     Inits the menu
@@ -161,8 +161,6 @@ namespace Jmx.LC.KeyboardInventory.UI
         #region GUI
         public void OnGUI()
         {
-            _mls.LogInfo($"OnGui(), GuiIsHost: {GuiIsHost}, MenuStyle: {_menuStyle != null}, isMenuOpen: {_isMenuOpen}");
-            
             // if (!GuiIsHost)
             //     return;
             

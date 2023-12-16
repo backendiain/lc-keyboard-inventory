@@ -1,8 +1,11 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
+using Jmx.LC.KeyboardInventory.GameObjects;
+using Jmx.LC.KeyboardInventory.Patches;
 using Jmx.LC.KeyboardInventory.UI;
 using UnityEngine;
 
@@ -16,7 +19,7 @@ namespace Jmx.LC.KeyboardInventory
         internal const string ModVersion = "0.1.0";
     
         private readonly Harmony _harmony = new Harmony(ModGuid);
-        private static KeyboardInventoryModBase Instance;
+        internal static KeyboardInventoryModBase Instance;
         internal static ManualLogSource _mls;
         
         // Host
@@ -28,6 +31,12 @@ namespace Jmx.LC.KeyboardInventory
         // GUI
         internal static GUILoader _myGUI;
         private static bool _hasGUISynced = false;
+        
+        // Key bindings
+        private KeyboardShortcut _alphaKeyOne;
+        private KeyboardShortcut _alphaKeyTwo;
+        private KeyboardShortcut _alphaKeyThree;
+        private KeyboardShortcut _alphaKeyFour;
 
         // Player
         internal static PlayerControllerB _playerRef;
@@ -41,15 +50,22 @@ namespace Jmx.LC.KeyboardInventory
             _mls = BepInEx.Logging.Logger.CreateLogSource(ModGuid);
             _mls.LogInfo($"Loaded {ModName}. Patching...");
             _harmony.PatchAll(typeof(KeyboardInventoryModBase));
+            _harmony.PatchAll(typeof(PlayerControllerBPatch));
 
             var gameObj = new GameObject(nameof(GUILoader));
             DontDestroyOnLoad(gameObj);
             gameObj.hideFlags = HideFlags.HideAndDontSave;
             gameObj.AddComponent<GUILoader>();
             
+            var testObj = new GameObject(nameof(TestObject));
+            DontDestroyOnLoad(testObj);
+            testObj.hideFlags = HideFlags.HideAndDontSave;
+            testObj.AddComponent<TestObject>();
+            
             _myGUI = gameObj.GetComponent<GUILoader>();
             SetBindings();
             SetGUIVars();
+            SetupKeyBindings();
         }
         
         private void Update()
@@ -59,7 +75,7 @@ namespace Jmx.LC.KeyboardInventory
         
         private void SetBindings()
         {
-            _enableNumKeyInventoryBindings = Config.Bind("General Settings", "Enable num key inventory bindings?", true, "Enable num key inventory bindings?");
+            _enableNumKeyInventoryBindings = Config.Bind("General Settings", "Enable num key inventory bindings?", false, "Enable num key inventory bindings?");
         }
         
         private void SetGUIVars()
@@ -80,6 +96,16 @@ namespace Jmx.LC.KeyboardInventory
         }
         #endregion
         
+        #region Key Bindings
+        /// <summary>
+        ///     Setups key binding events
+        /// </summary>
+        private void SetupKeyBindings()
+        {
+            var root = GetComponent<GUILoader>();
+        }
+        #endregion
+
         #region Patches
         [HarmonyPatch(typeof(RoundManager), "Start")]
         [HarmonyPrefix]
