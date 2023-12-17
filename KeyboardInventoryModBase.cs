@@ -4,7 +4,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
-using Jmx.LC.KeyboardInventory.GameObjects;
 using Jmx.LC.KeyboardInventory.Patches;
 using Jmx.LC.KeyboardInventory.UI;
 using UnityEngine;
@@ -31,12 +30,6 @@ namespace Jmx.LC.KeyboardInventory
         // GUI
         internal static GUILoader _myGUI;
         private static bool _hasGUISynced = false;
-        
-        // Key bindings
-        private KeyboardShortcut _alphaKeyOne;
-        private KeyboardShortcut _alphaKeyTwo;
-        private KeyboardShortcut _alphaKeyThree;
-        private KeyboardShortcut _alphaKeyFour;
 
         // Player
         internal static PlayerControllerB _playerRef;
@@ -56,11 +49,6 @@ namespace Jmx.LC.KeyboardInventory
             DontDestroyOnLoad(gameObj);
             gameObj.hideFlags = HideFlags.HideAndDontSave;
             gameObj.AddComponent<GUILoader>();
-            
-            var testObj = new GameObject(nameof(TestObject));
-            DontDestroyOnLoad(testObj);
-            testObj.hideFlags = HideFlags.HideAndDontSave;
-            testObj.AddComponent<TestObject>();
             
             _myGUI = gameObj.GetComponent<GUILoader>();
             SetBindings();
@@ -109,7 +97,7 @@ namespace Jmx.LC.KeyboardInventory
         #region Patches
         [HarmonyPatch(typeof(RoundManager), "Start")]
         [HarmonyPrefix]
-        static void SetIsHost()
+        private static void SetIsHost()
         {
             _mls.LogInfo("Host Status: " + RoundManager.Instance.NetworkManager.IsHost);
             _isHost = RoundManager.Instance.NetworkManager.IsHost;
