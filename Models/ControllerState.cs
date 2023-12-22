@@ -14,6 +14,6 @@ namespace Jmx.LC.KeyboardInventory.Models
         /// <summary>
         ///     The state for each bind of the control scheme
         /// </summary>
-        public ControlActionState[] Inputs { get; set; }
+        public IEnumerable<ControlActionState> Inputs { get; set; }
     }
 }

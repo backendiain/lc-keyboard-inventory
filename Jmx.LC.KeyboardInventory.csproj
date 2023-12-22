@@ -20,9 +20,6 @@
     <Reference Include="BepInEx">
       <HintPath>libs\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ConfigurationManager">
-      <HintPath>F:\SteamLibrary\steamapps\common\Lethal Company\BepInEx\plugins\ConfigurationManager.dll</HintPath>
-    </Reference>
     <Reference Include="Facepunch.Steamworks.Win64">
       <HintPath>F:\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>

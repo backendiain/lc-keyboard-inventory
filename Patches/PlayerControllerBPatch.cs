@@ -22,7 +22,12 @@ namespace Jmx.LC.KeyboardInventory.Patches
         internal static ControlActionState _itemSlot3Action;
         internal static ControlActionState _itemSlot4Action;
 
+        internal static ControlActionState _emote1Action;
+        internal static ControlActionState _emote2Action;
+
         internal static ControllerState _allActions;
+        internal static ControllerState _itemSlotActions;
+        internal static ControllerState _emoteActions;
 
         #region Patches
         [HarmonyPatch("Start")]
@@ -33,15 +38,27 @@ namespace Jmx.LC.KeyboardInventory.Patches
                 KeyboardInventoryModBase._playerRef = __instance;
 
             // Inventory switch key binds
-            // todo: Unbind emotes from alpha1 and alpha2 and rebind them to other keys
             _itemSlot1Action = new ControlActionState { Key = new KeyboardShortcut(KeyCode.Alpha1), Description = "Item slot 1", ItemSlotIndex = 0 };
             _itemSlot2Action = new ControlActionState { Key = new KeyboardShortcut(KeyCode.Alpha2), Description = "Item slot 2", ItemSlotIndex = 1 };
             _itemSlot3Action = new ControlActionState { Key = new KeyboardShortcut(KeyCode.Alpha3), Description = "Item slot 3", ItemSlotIndex = 2 };
             _itemSlot4Action = new ControlActionState { Key = new KeyboardShortcut(KeyCode.Alpha4), Description = "Item slot 4", ItemSlotIndex = 3 };
 
+            _itemSlotActions = new ControllerState
+            {
+                Inputs = new[] {_itemSlot1Action, _itemSlot2Action, _itemSlot3Action, _itemSlot4Action},
+            };
+            
+            _emote1Action = new ControlActionState { Key = new KeyboardShortcut(KeyCode.Minus), Description = "Emote 1", ItemSlotIndex = 4 };
+            _emote2Action = new ControlActionState { Key = new KeyboardShortcut(KeyCode.Equals), Description = "Emote 2", ItemSlotIndex = 5 };
+
+            _emoteActions = new ControllerState
+            {
+                Inputs = new[] {_emote1Action, _emote2Action},
+            };
+            
             _allActions = new ControllerState
             {
-                Inputs = new[] { _itemSlot1Action, _itemSlot2Action, _itemSlot3Action, _itemSlot4Action }
+                Inputs = _itemSlotActions.Inputs.Concat(_emoteActions.Inputs),
             };
         }
         
@@ -54,6 +71,9 @@ namespace Jmx.LC.KeyboardInventory.Patches
         {
             KeyboardInventoryModBase._myGUI.GuiIsHost = KeyboardInventoryModBase._isHost;
             KeyboardInventoryModBase.Instance.UpdateCFGVarsFromGUI();
+            
+            if (!KeyboardInventoryModBase.EnableNumKeyInventoryBindings.Value)
+                return;
 
             if ((!__instance.IsOwner || !__instance.isPlayerControlled ||
                 __instance.IsServer && !__instance.isHostPlayerObject) && !__instance.isTestingPlayer)
@@ -98,8 +118,20 @@ namespace Jmx.LC.KeyboardInventory.Patches
             if (action.Key.IsUp() && action.EndedDown)
                 action.EndedDown = false;
 
-            if (action.EndedDown && SwitchItemSlot(__instance, action.ItemSlotIndex, __timeSinceSwitchingSlots, __throwingObject))
+            // Emotes
+            if (action.EndedDown && _emoteActions.Inputs.Any(x => x.Key.MainKey == action.Key.MainKey))
+            {
+                PerformEmote(ref __instance, action.Key.MainKey == KeyCode.Minus ? 1 : 2);
+                return action;
+            }
+
+            // Inventory Switching
+            if (action.EndedDown && CanSwitchItem(__instance, __timeSinceSwitchingSlots, __throwingObject))
+            {
+                StopAllEmotes(ref __instance, __timeSinceSwitchingSlots, __throwingObject);
+                SwitchItemSlot(__instance, action.ItemSlotIndex, __timeSinceSwitchingSlots, __throwingObject);
                 __timeSinceSwitchingSlots = 0;
+            }
 
             return action;
         }
@@ -182,6 +214,37 @@ namespace Jmx.LC.KeyboardInventory.Patches
                      instance.inSpecialInteractAnimation || isThrowingObject || instance.isTypingChat ||
                      instance.twoHanded || instance.activatingItem || instance.jetpackControls ||
                      instance.disablingJetpackControls);
+        }
+
+        /// <summary>
+        ///     Performs the beginning emote for the provided player instance matching the given emote ID
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="emoteId"></param>
+        private static void PerformEmote(
+            ref PlayerControllerB __instance,
+            int emoteId)
+        {
+            __instance.timeSinceStartingEmote = 0;
+            __instance.performingEmote = true;
+            __instance.playerBodyAnimator.SetInteger("emoteNumber", emoteId);
+            __instance.StartPerformingEmoteServerRpc();
+        }
+
+        /// <summary>
+        ///     Stops all emotes being performed by the provided instance
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="timeSinceSwitchingSlots"></param>
+        /// <param name="isThrowingObject"></param>
+        private static void StopAllEmotes(
+            ref PlayerControllerB __instance, 
+            float timeSinceSwitchingSlots, 
+            bool isThrowingObject)
+        {
+            __instance.performingEmote = false;
+            __instance.timeSinceStartingEmote = 0;
+            __instance.StopPerformingEmoteServerRpc();
         }
         #endregion
 

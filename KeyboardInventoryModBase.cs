@@ -34,6 +34,11 @@ namespace Jmx.LC.KeyboardInventory
         // Player
         internal static PlayerControllerB _playerRef;
 
+        /// <summary>
+        ///     Determines whether the module custom inventory keyboard bindings are active or not
+        /// </summary>
+        internal static ConfigEntry<bool> EnableNumKeyInventoryBindings => _enableNumKeyInventoryBindings;
+
         #region Lifecycle Private
         private void Awake()
         {

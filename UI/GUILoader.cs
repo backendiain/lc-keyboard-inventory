@@ -1,6 +1,8 @@
 ﻿using BepInEx.Configuration;
 using BepInEx.Logging;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Cursor = UnityEngine.Cursor;
 
 namespace Jmx.LC.KeyboardInventory.UI
 {
