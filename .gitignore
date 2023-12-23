@@ -4,3 +4,5 @@ obj
 bin
 *.sln.DotSettings.user
 libs
+thunderstore-pack
+thunderstore-pack.*

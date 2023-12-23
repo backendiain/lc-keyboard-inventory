@@ -14,7 +14,12 @@ If you want to play with the source code, just nab the libraries from your Letha
 `Managed Code` directory and plank them in `libs`.
 
 ## Installation
-Thunderstore install: todo
+### Thunderstore Install
+Install the package using the Thunderstore App or any other mod manager that is compatible with Thunderstore.
+
+The mod has [BepInEx](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/) as a dependency in order to run.
+
+Thunderstore listing [here](https://thunderstore.io/c/lethal-company/p/backendiain/KeyboardInventory/).
 
 ### Manual Install
 #### If you do not already have BepInEx
