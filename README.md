@@ -45,7 +45,7 @@ If you run into problems post into the repo's [Issues](https://github.com/backen
 ## Acknowledgements
 I just flat out missed some of the private methods in dotPeek of PlayerControllerB I could call to achieve the item switches.
 
-The [ItemQuickSwitchMod](https://github.com/vasanex/ItemQuickSwitchMod) by vasanex enlightened me on how best to achieve this so special thanks to him.
+The [ItemQuickSwitchMod](https://github.com/vasanex/ItemQuickSwitchMod) by vasanex enlightened me on how best to achieve this so special thanks to them.
 
 The [LethalCompanyGameMaster](https://github.com/lawrencea13/LethalCompanyGameMaster) repo lawrencea13 was also beneficial.
 
