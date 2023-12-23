@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Cursor = UnityEngine.Cursor;
 
-namespace Jmx.LC.KeyboardInventory.UI
+namespace BackendIain.LC.KeyboardInventory.UI
 {
     internal class GUILoader : MonoBehaviour
     {

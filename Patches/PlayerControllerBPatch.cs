@@ -1,14 +1,14 @@
 ﻿using BepInEx.Configuration;
 using GameNetcodeStuff;
 using HarmonyLib;
-using Jmx.LC.KeyboardInventory.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BackendIain.LC.KeyboardInventory.Models;
 using UnityEngine;
 
-namespace Jmx.LC.KeyboardInventory.Patches
+namespace BackendIain.LC.KeyboardInventory.Patches
 {
     [HarmonyPatch(typeof(PlayerControllerB))]
     public class PlayerControllerBPatch

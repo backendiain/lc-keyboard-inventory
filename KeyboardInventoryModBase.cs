@@ -1,19 +1,19 @@
 ﻿using System;
+using BackendIain.LC.KeyboardInventory.Patches;
+using BackendIain.LC.KeyboardInventory.UI;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
-using Jmx.LC.KeyboardInventory.Patches;
-using Jmx.LC.KeyboardInventory.UI;
 using UnityEngine;
 
-namespace Jmx.LC.KeyboardInventory
+namespace BackendIain.LC.KeyboardInventory
 {
     [BepInPlugin(ModGuid, ModName, ModVersion)]
     public class KeyboardInventoryModBase : BaseUnityPlugin
     {
-        internal const string ModGuid = "Jmx.LC.KeyboardInventory";
+        internal const string ModGuid = "BackendIain.LC.KeyboardInventory";
         internal const string ModName = "Keyboard Inventory";
         internal const string ModVersion = "0.1.0";
     

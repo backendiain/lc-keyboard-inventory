@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jmx.LC.KeyboardInventory.Models
+namespace BackendIain.LC.KeyboardInventory.Models
 {
     /// <summary>
     ///     A state of the control scheme used for player actions

@@ -1,6 +1,6 @@
 ﻿using BepInEx.Configuration;
 
-namespace Jmx.LC.KeyboardInventory.Models
+namespace BackendIain.LC.KeyboardInventory.Models
 {
     internal struct ControlActionState
     {
